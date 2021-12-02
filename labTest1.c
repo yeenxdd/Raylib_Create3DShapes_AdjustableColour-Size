@@ -18,7 +18,7 @@ int main(void)
     // Initialization
     //--------------------------------------------------------------------------------------
     const int screenWidth = 800;
-    const int screenHeight = 450;
+    const int screenHeight = 550;
 
     InitWindow(screenWidth, screenHeight, "raylib [core] example - 3d camera mode");
 
@@ -39,15 +39,19 @@ int main(void)
     camera.projection = CAMERA_PERSPECTIVE;             // Camera mode type
 
     //shapes size     
-    Vector3 cubeSize = {2.0f,2.0f,2.0f};
-    int sphereSize = 1.0f; //sphere radius, ring,slice
+    float cubeSize = 2.0f;
+    float sphereSize = 1.0f; //sphere radius, ring,slice
     Vector3 cuboidSize = {2.0f,3.0f,4.0f};
-
     
     //shapes position
-    Vector3 cubePosition = { 0.0f, 0.0f, 0.0f };
-    Vector3 spherePosition = { 3.0f, 0.0f, 0.0f };
+    Vector3 cubePosition = { -3.0f, 0.0f, 0.0f };
+    Vector3 spherePosition = { -3.0f, 0.0f, 0.0f };
     Vector3 cuboidPosition = { -3.0f, 0.0f, 0.0f };
+    
+    //shapes colour
+    Color cubeColour = (Color){25,55,25,255};
+    Color sphereColour=(Color){25,55,25,255};
+    Color cuboidColour=(Color){25,55,25,255};
 
     SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------
@@ -56,7 +60,6 @@ int main(void)
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
         // Update
-        Rectangle rec = { (GetScreenWidth() - width - 250)/2, (GetScreenHeight() - height)/2, width, height }; //gui controls rec position
         //----------------------------------------------------------------------------------
         // TODO: Update your variables here
         //----------------------------------------------------------------------------------
@@ -70,27 +73,41 @@ int main(void)
             drawCube=GuiCheckBox((Rectangle){ 640, 80, 20, 20 }, "Cube", drawCube);
             drawSphere=GuiCheckBox((Rectangle){ 640, 110, 20, 20 }, "Sphere", drawSphere);
             drawCuboid=GuiCheckBox((Rectangle){ 640, 140, 20, 20 }, "Cuboid", drawCuboid);
+            
+            cubeSize = GuiSliderBar((Rectangle){ 640, 180, 105, 20 }, "Cube Size", NULL, cubeSize, 0, 10);
+            if(GuiButton( (Rectangle){ 640, 210, 120, 20 }, "Random Cube Colour" ))
+                cubeColour = (Color){ GetRandomValue(0, 255), GetRandomValue(0, 255), GetRandomValue(0, 255), 255 };
 
+            sphereSize=GuiSliderBar((Rectangle){ 640, 250, 105, 20 }, "Sphere Radius", NULL, sphereSize, 0.1f, 5.0f);
+            if(GuiButton( (Rectangle){ 640, 280, 120, 20 }, "Random Sphere Colour" ))
+                sphereColour = (Color){ GetRandomValue(0, 255), GetRandomValue(0, 255), GetRandomValue(0, 255), 255 };
 
+            cuboidSize.x = GuiSliderBar((Rectangle){ 640, 320, 105, 20 }, "Cuboid Length", NULL, cuboidSize.x, 0, 10);
+            cuboidSize.y = GuiSliderBar((Rectangle){ 640, 350, 105, 20 }, "Cuboid Height", NULL, cuboidSize.y, 0, 10);
+            cuboidSize.z = GuiSliderBar((Rectangle){ 640, 380, 105, 20 }, "Cuboid Width", NULL, cuboidSize.z, 0, 10);
+            if(GuiButton( (Rectangle){ 640, 420, 120, 20 }, "Random Cuboid Colour" ))
+                cuboidColour = (Color){ GetRandomValue(0, 255), GetRandomValue(0, 255), GetRandomValue(0, 255), 255 };
+            
             BeginMode3D(camera);
             
                 
                 if(drawCube){
-                    DrawCube(cubePosition, cubeSize.x, cubeSize.y, cubeSize.z, RED);
-                    DrawCubeWires(cubePosition, cubeSize.x, cubeSize.y, cubeSize.z, PINK);
+                    DrawCube(cubePosition, cubeSize, cubeSize, cubeSize, cubeColour);
+                    DrawCubeWires(cubePosition, cubeSize, cubeSize, cubeSize, BLACK);
                 }
                 
                 if(drawSphere){
-                    DrawSphere(spherePosition,sphereSize,BLUE);
-                    DrawSphereWires(spherePosition,sphereSize,sphereSize,sphereSize,SKYBLUE);
+                    DrawSphere(spherePosition,sphereSize,sphereColour);
+                    DrawSphereWires(spherePosition,sphereSize,sphereSize,sphereSize,BLACK);
                 }
                 
                 if(drawCuboid){
-                    DrawCube(cuboidPosition, cuboidSize.x, cuboidSize.y, cuboidSize.z, LIME);
-                    DrawCubeWires(cuboidPosition,cuboidSize.x, cuboidSize.y, cuboidSize.z, GREEN);
+                    DrawCube(cuboidPosition, cuboidSize.x, cuboidSize.y, cuboidSize.z, cuboidColour);
+                    DrawCubeWires(cuboidPosition,cuboidSize.x, cuboidSize.y, cuboidSize.z, BLACK);
                 }
 
-                DrawGrid(10, 1.0f);
+                //DrawGrid(10, 1.0f);
+                
 
             EndMode3D();
 
